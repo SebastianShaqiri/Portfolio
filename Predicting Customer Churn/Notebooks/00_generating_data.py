@@ -49,7 +49,7 @@ def synth_data(n=10000, random_seed=42):
 
     # 3. Underlying logistic model for churn probability
     # I define churn odds as a function of some variables plus some random noise
-    alpha = -3.0 
+    alpha = -2.0 
     
     # Numeric encoding for supscription tier in the logistic model
     tier_map = {"Basic": 0, "Standard": 1, "Premium": 2}
@@ -58,11 +58,13 @@ def synth_data(n=10000, random_seed=42):
     # Construct the log-odds
     log_odds = (
         alpha
-        + 0.03 * (age - 30)
-        - 0.5  * (tier_num == 2).astype(float)    # Premium user => reduce churn
-        + 0.02 * last_login_days_ago
-        + 0.3  * late_payments_6m
-        + np.random.normal(0, 0.5, size=n)
+        + 0.05 * (age - 30)
+        - 1    * (tier_num == 2).astype(float)    # Premium user => reduce churn
+        + 0.05 * last_login_days_ago
+        + 0.7  * late_payments_6m
+        - 0.02 * monthly_spend 
+        - 0.3  * (tier_num == 2).astype(float) * monthly_spend
+        + np.random.normal(0, 0.3, size=n)
     )
 
     # Probability of churn 
